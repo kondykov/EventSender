@@ -9,5 +9,9 @@ pip install -r requirements.txt
 
 Сборка проекта
 ```commandline
-pyinstaller --onefile main.py
+pyinstaller --windowed --onefile main.py
+```
+Сборка с картинкой (только на windows и mac os)
+```commandline
+pyinstaller --windowed --onefile --icon=logo.ico main.py
 ```
