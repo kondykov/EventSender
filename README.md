@@ -6,3 +6,8 @@ Event sender для отправки тестовых объектов в оче
 ```commandline
 pip install -r requirements.txt
 ```
+
+Сборка проекта
+```commandline
+pyinstaller --onefile main.py
+```
