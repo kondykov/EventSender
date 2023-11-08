@@ -1,5 +1,6 @@
 import json
 import pika
+from pika import exceptions
 
 def send(data, body):
     message = {
@@ -17,12 +18,15 @@ def send(data, body):
             'storage_date': '20.12.2024'
         }
     }
-
-    params = pika.ConnectionParameters(host=data['host'], port=data['port'],
-                    credentials=pika.PlainCredentials(username=data['username'], password=data['password']))
-    connection = pika.BlockingConnection(params)
-    channel = connection.channel()
-    channel.queue_declare(queue=data['queue'], durable=True)
-    channel.basic_publish(exchange='', routing_key=data['queue'],
-                          body=json.dumps(message['body']).encode(),
-                          properties=pika.BasicProperties(**message['properties']))
+    try:
+        params = pika.ConnectionParameters(host=data['host'], port=data['port'],
+                        credentials=pika.PlainCredentials(username=data['username'], password=data['password']))
+        connection = pika.BlockingConnection(params)
+        channel = connection.channel()
+        channel.queue_declare(queue=data['queue'], durable=True)
+        channel.basic_publish(exchange='', routing_key=data['queue'],
+                              body=json.dumps(message['body']).encode(),
+                              properties=pika.BasicProperties(**message['properties']))
+        return True, None
+    except exceptions.AMQPError as e:
+        return False, e
