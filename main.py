@@ -13,7 +13,8 @@ def main(page: ft.Page):
             'port': port.value,
             'queue': queue.value,
             'username': user.value,
-            'password': password.value
+            'password': password.value,
+            'body': body_json.value
         }
 
         ok, err = sender.send(data, body)
@@ -34,6 +35,7 @@ def main(page: ft.Page):
     port = ft.TextField(label="Port", value=saved_data['port'])
     queue = ft.TextField(label="Queue", value=saved_data['queue'])
     send_button = ft.ElevatedButton(text="Submit", on_click=send_handler)
+    body_json = ft.TextField(label="Body", multiline=True)
     result_message = ft.Text()
 
     page.add(
@@ -44,6 +46,7 @@ def main(page: ft.Page):
         host,
         port,
         queue,
+        body_json,
         send_button,
         result_message
     )
