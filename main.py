@@ -27,7 +27,7 @@ def main(page: ft.Page):
         page.update()
 
     def find_host(e):
-        logs = check_output('docker logs 1bom-rabbitmq-1', shell=True)
+        logs = check_output('docker logs --tail 10 1bom-rabbitmq-1', shell=True)
         match = re.search(r'(?P<ip>172\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}):(?P<port>[0-9]+)\)', logs.decode())
         if match:
             host.value = match.group('ip')
@@ -36,6 +36,7 @@ def main(page: ft.Page):
             result_message.value = 'Не удалось извлечь информацию'
         page.update()
 
+    page.title = 'Event Sender'
     saved_data = defaultdict(str, saver.read_data())
     auth = ft.Text("Auth:", size=24)
     user = ft.TextField(label="User", value=saved_data['username'])

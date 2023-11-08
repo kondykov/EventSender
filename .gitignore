@@ -1,7 +1,7 @@
 venv/
 __pycache__/
 .idea/
-data/cache
+cache
 main.spec
 dist/
 build/
