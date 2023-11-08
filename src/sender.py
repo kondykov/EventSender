@@ -1,17 +1,7 @@
 import json
 import pika
 
-def send(host, port, queue, user, password, body):
-    data = {
-        'host': {host},
-        'port': {port},
-        # 'queue': 'abom.order_delivery.storage_date_changed',
-        'queue': {queue},
-        'auth': {
-            'username': {user},
-            'password': {password}
-        }
-    }
+def send(data, body):
     message = {
         'properties': {
             'headers': {
@@ -27,8 +17,9 @@ def send(host, port, queue, user, password, body):
             'storage_date': '20.12.2024'
         }
     }
+
     params = pika.ConnectionParameters(host=data['host'], port=data['port'],
-                                       credentials=pika.PlainCredentials(**data['auth']))
+                    credentials=pika.PlainCredentials(username=data['username'], password=data['password']))
     connection = pika.BlockingConnection(params)
     channel = connection.channel()
     channel.queue_declare(queue=data['queue'], durable=True)

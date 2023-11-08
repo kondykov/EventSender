@@ -1,45 +1,57 @@
-import os
-import flet
+from collections import defaultdict
+
+from flet import app, Text, TextField, Page, ElevatedButton
+
 from src import sender
-from config import envconfig as env
-from flet import *
+from data import saver
 
 
 def main(page: Page):
-    def btnSend(e):
+    def send_handler(e):
+        data = {
+            'host': host.value,
+            'port': port.value,
+            'queue': queue.value,
+            'username': user.value,
+            'password': password.value
+        }
+        saver.save_data(data)
         try:
-            sender.send(Host.value, Port.value, Queue.value, User.value, Password.value, 1)
-        except:
-            t.value = (
-                f"Send event failed:  \n"
-                f"HOST: '{env.RABBIT_HOST}', \n"
-                f"POST: '{env.RABBIT_PORT}', \n"
-                f"AUTH: '{User}'. \n"
+            sender.send(data, body)
+            result_message.value = 'The message is successfully sent'
+        except Exception as e:
+            result_message.value = (
+                f'''Send event failed:
+                HOST: {data['host']},
+                POST: {data['port']},
+                AUTH: {data['auth']['username']},
+                ERROR: {e}.'''
             )
         page.update()
 
-    t = Text()
-    txtAuth = Text("Auth:", size=24)
-    User = TextField(label="User", value=f'{env.RABBIT_USER}')
-    Password = TextField(label="Password", value=f'{env.RABBIT_PASSWORD}')
-    txtData = Text("Data:", size=24)
-    Host = TextField(label="Host", value=f'{env.RABBIT_HOST}')
-    Port = TextField(label="Port", value=f'{env.RABBIT_PORT}')
-    Queue = TextField(label="Queue", value=f'{env.RABBIT_QUEUE_NAME}')
-    b = ElevatedButton(text="Submit", on_click=btnSend)
+    saved_data = defaultdict(str, saver.read_data())
+    auth = Text("Auth:", size=24)
+    user = TextField(label="User", value=saved_data['username'])
+    password = TextField(label="Password", value=saved_data['password'])
+    body = Text("Data:", size=24)
+    host = TextField(label="Host", value=saved_data['host'])
+    port = TextField(label="Port", value=saved_data['port'])
+    queue = TextField(label="Queue", value=saved_data['queue'])
+    send_button = ElevatedButton(text="Submit", on_click=send_handler)
+    result_message = Text()
 
     page.add(
-        txtAuth,
-        User,
-        Password,
-        txtData,
-        Host,
-        Port,
-        Queue,
-        b,
-        t
+        auth,
+        user,
+        password,
+        body,
+        host,
+        port,
+        queue,
+        send_button,
+        result_message
     )
 
 
 if __name__ == '__main__':
-    flet.app(target=main)
+    app(target=main)
