@@ -24,5 +24,5 @@ def send(data, body):
                               body=data['body'].encode(),
                               properties=pika.BasicProperties(**props))
         return True, None
-    except exceptions.AMQPError as e:
+    except (exceptions.AMQPError, Exception) as e:
         return False, e
