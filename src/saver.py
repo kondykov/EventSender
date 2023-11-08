@@ -1,7 +1,7 @@
 import pickle
 
 
-DATA_CACHE = 'data/data_cache'
+DATA_CACHE = 'data/cache'
 
 
 def read_data(file_name=DATA_CACHE):

@@ -15,14 +15,21 @@ def send(data, body):
     try:
         params = pika.ConnectionParameters(
             host=data['host'], port=data['port'],
-            credentials=pika.PlainCredentials(username=data['username'], password=data['password'])
+            credentials=pika.PlainCredentials(
+                username=data['username'],
+                password=data['password']
+            )
         )
+
         connection = pika.BlockingConnection(params)
         channel = connection.channel()
         channel.queue_declare(queue=data['queue'], durable=True)
-        channel.basic_publish(exchange='', routing_key=data['queue'],
-                              body=data['body'].encode(),
-                              properties=pika.BasicProperties(**props))
+        channel.basic_publish(
+            exchange='',
+            routing_key=data['queue'],
+            body=data['body'].encode(),
+            properties=pika.BasicProperties(**props)
+        )
         return True, None
     except (exceptions.AMQPError, Exception) as e:
         return False, e

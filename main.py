@@ -2,8 +2,7 @@ from collections import defaultdict
 
 import flet as ft
 
-from src import sender
-from data import saver
+from src import sender, saver
 
 
 def main(page: ft.Page):
@@ -35,7 +34,7 @@ def main(page: ft.Page):
     port = ft.TextField(label="Port", value=saved_data['port'])
     queue = ft.TextField(label="Queue", value=saved_data['queue'])
     send_button = ft.ElevatedButton(text="Submit", on_click=send_handler)
-    body_json = ft.TextField(label="Body", multiline=True)
+    body_json = ft.TextField(label="Body", multiline=True, value=saved_data['body'])
     result_message = ft.Text()
 
     page.add(
